@@ -101,8 +101,8 @@ func TestConjuredQualityIsNeverNegative(t *testing.T) {
 // Auxiliary functions
 
 func testSellIn(t *testing.T, itemName string, initiallSellIn int, initialQuality int, expectedSellIn int) {
-	items := []Item{
-		Item{itemName, initiallSellIn, initialQuality},
+	items := []*Item{
+		&Item{itemName, initiallSellIn, initialQuality},
 	}
 
 	UpdateInventory(items)
@@ -113,8 +113,8 @@ func testSellIn(t *testing.T, itemName string, initiallSellIn int, initialQualit
 }
 
 func testQuality(t *testing.T, itemName string, initiallSellIn int, initialQuality int, expectedQuality int) {
-	items := []Item{
-		Item{itemName, initiallSellIn, initialQuality},
+	items := []*Item{
+		&Item{itemName, initiallSellIn, initialQuality},
 	}
 
 	UpdateInventory(items)
