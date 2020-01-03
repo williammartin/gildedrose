@@ -71,27 +71,29 @@ func UpdateInventory(items []*Item) {
 }
 
 func UpdateAnything(item *Item) {
-	item.sellIn = item.sellIn - 1
 	if item.quality > 0 {
 		item.quality = item.quality - 1
 	}
 
-	if item.quality > 0 && item.sellIn < 0 {
+	if item.quality > 0 && item.sellIn < 1 {
 		item.quality = item.quality - 1
 	}
+
+	item.sellIn = item.sellIn - 1
 }
 
 func UpdateBrie(item *Item) {
-	item.sellIn = item.sellIn - 1
 	if item.quality == 50 {
 		return
 	}
 
 	item.quality = item.quality + 1
 
-	if item.sellIn < 0 {
+	if item.sellIn < 1 {
 		item.quality = item.quality + 1
 	}
+
+	item.sellIn = item.sellIn - 1
 }
 
 func UpdateSulfuras(item *Item) {
@@ -99,22 +101,23 @@ func UpdateSulfuras(item *Item) {
 }
 
 func UpdateBackstage(item *Item) {
-	item.sellIn = item.sellIn - 1
 	item.quality = item.quality + 1
 
-	if item.sellIn < 10 {
+	if item.sellIn <= 10 {
 		item.quality = item.quality + 1
 	}
 
-	if item.sellIn < 5 {
+	if item.sellIn <= 5 {
 		item.quality = item.quality + 1
 	}
 
-	if item.sellIn < 0 {
+	if item.sellIn <= 0 {
 		item.quality = 0
 	}
 
 	if item.quality > 50 {
 		item.quality = 50
 	}
+
+	item.sellIn = item.sellIn - 1
 }
