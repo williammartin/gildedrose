@@ -61,16 +61,12 @@ func (g *GildedRose) UpdateInventory() {
 
 		if item.Name == "Sulfuras, Hand of Ragnaros" {
 			updateSulfuras(item)
-			continue
-		} else if item.Name == "Normal" {
-			updateNormalItem(item)
-			continue
 		} else if item.Name == "Aged Brie" {
 			updateBrie(item)
-			continue
 		} else if item.Name == "Backstage passes to a TAFKAL80ETC concert" {
 			updatePasses(item)
-			continue
+		} else {
+			updateNormalItem(item)
 		}
 	}
 }

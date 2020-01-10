@@ -23,28 +23,11 @@ var _ = Describe("The Gilded Rose", func() {
 		shop.UpdateInventory()
 	})
 
-	Describe("Sulfuras, Hand of Ragnaros", func() {
-		var sulfuras *Item
-
-		BeforeEach(func() {
-			sulfuras = &Item{Name: "Sulfuras, Hand of Ragnaros", SellIn: 20, Quality: 80}
-			inventory = append(inventory, sulfuras)
-		})
-
-		It("always has a quality of 80", func() {
-			Expect(sulfuras.Quality).To(Equal(80))
-		})
-
-		It("never needs to be sold", func() {
-			Expect(sulfuras.SellIn).To(Equal(20))
-		})
-	})
-
-	Describe("Any normal item", func() {
+	Describe("An item with any non-special name", func() {
 		var normalItem *Item
 
 		BeforeEach(func() {
-			normalItem = &Item{Name: "Normal", SellIn: 20, Quality: 10}
+			normalItem = &Item{Name: "Non-special", SellIn: 20, Quality: 10}
 			inventory = append(inventory, normalItem)
 		})
 
@@ -58,7 +41,7 @@ var _ = Describe("The Gilded Rose", func() {
 
 		When("the sell by date has passed", func() {
 			BeforeEach(func() {
-				normalItem = &Item{Name: "Normal", SellIn: 0, Quality: 10}
+				normalItem = &Item{Name: "Also Non-Special", SellIn: 0, Quality: 10}
 				inventory = append(inventory, normalItem)
 			})
 
@@ -76,6 +59,23 @@ var _ = Describe("The Gilded Rose", func() {
 			It("cannot decrease in quality any further", func() {
 				Expect(normalItem.Quality).To(Equal(0))
 			})
+		})
+	})
+
+	Describe("Sulfuras, Hand of Ragnaros", func() {
+		var sulfuras *Item
+
+		BeforeEach(func() {
+			sulfuras = &Item{Name: "Sulfuras, Hand of Ragnaros", SellIn: 20, Quality: 80}
+			inventory = append(inventory, sulfuras)
+		})
+
+		It("always has a quality of 80", func() {
+			Expect(sulfuras.Quality).To(Equal(80))
+		})
+
+		It("never needs to be sold", func() {
+			Expect(sulfuras.SellIn).To(Equal(20))
 		})
 	})
 
