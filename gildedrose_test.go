@@ -127,5 +127,53 @@ var _ = Describe("The Gilded Rose", func() {
 		It("decreases sell in date by 1 each day", func() {
 			Expect(passes.SellIn).To(Equal(19))
 		})
+
+		When("the sell by date is within 10 days", func() {
+			BeforeEach(func() {
+				passes = &Item{Name: "Backstage passes to a TAFKAL80ETC concert", SellIn: 10, Quality: 10}
+				shop := &GildedRose{Inventory: []*Item{passes}}
+				shop.UpdateInventory()
+			})
+
+			It("increases the quality by 2 each day", func() {
+				Expect(passes.Quality).To(Equal(12))
+			})
+		})
+
+		When("the sell by date is within 5 days", func() {
+			BeforeEach(func() {
+				passes = &Item{Name: "Backstage passes to a TAFKAL80ETC concert", SellIn: 5, Quality: 10}
+				shop := &GildedRose{Inventory: []*Item{passes}}
+				shop.UpdateInventory()
+			})
+
+			It("increases the quality by 3 each day", func() {
+				Expect(passes.Quality).To(Equal(13))
+			})
+		})
+
+		When("the sell by date is passed", func() {
+			BeforeEach(func() {
+				passes = &Item{Name: "Backstage passes to a TAFKAL80ETC concert", SellIn: 0, Quality: 10}
+				shop := &GildedRose{Inventory: []*Item{passes}}
+				shop.UpdateInventory()
+			})
+
+			It("the quality decreases to 0", func() {
+				Expect(passes.Quality).To(Equal(0))
+			})
+		})
+
+		When("the quality has reached 0", func() {
+			BeforeEach(func() {
+				passes = &Item{Name: "Backstage passes to a TAFKAL80ETC concert", SellIn: 0, Quality: 10}
+				shop := &GildedRose{Inventory: []*Item{passes}}
+				shop.UpdateInventory()
+			})
+
+			It("cannot decrease in quality any further", func() {
+				Expect(passes.Quality).To(Equal(0))
+			})
+		})
 	})
 })
