@@ -12,21 +12,33 @@ type GildedRose struct {
 	Inventory Inventory
 }
 
-func updateSulfuras(sulfuras *Item) {}
+type Sulfuras struct {
+	*Item
+}
 
-func updateNormalItem(item *Item) {
-	item.SellIn--
-	if item.Quality == 0 {
+func (s *Sulfuras) Update() {}
+
+type Normal struct {
+	Item *Item
+}
+
+func (item *Normal) Update() {
+	item.Item.SellIn--
+	if item.Item.Quality == 0 {
 		return
 	}
 
-	item.Quality--
-	if item.SellIn < 0 {
-		item.Quality--
+	item.Item.Quality--
+	if item.Item.SellIn < 0 {
+		item.Item.Quality--
 	}
 }
 
-func updateBrie(brie *Item) {
+type Brie struct {
+	*Item
+}
+
+func (brie *Brie) Update() {
 	brie.SellIn--
 	if brie.Quality == 50 {
 		return
@@ -38,7 +50,11 @@ func updateBrie(brie *Item) {
 	}
 }
 
-func updatePasses(passes *Item) {
+type Passes struct {
+	*Item
+}
+
+func (passes *Passes) Update() {
 	passes.SellIn--
 	if passes.SellIn < 0 {
 		passes.Quality = 0
@@ -58,15 +74,32 @@ func updatePasses(passes *Item) {
 func (g *GildedRose) UpdateInventory() {
 	for i := 0; i < len(g.Inventory); i++ {
 		item := g.Inventory[i]
+		ItemFactory{}.Wrap(item).Update()
+	}
+}
 
-		if item.Name == "Sulfuras, Hand of Ragnaros" {
-			updateSulfuras(item)
-		} else if item.Name == "Aged Brie" {
-			updateBrie(item)
-		} else if item.Name == "Backstage passes to a TAFKAL80ETC concert" {
-			updatePasses(item)
-		} else {
-			updateNormalItem(item)
+type ItemFactory struct{}
+
+func (f ItemFactory) Wrap(item *Item) Updateable {
+	if item.Name == "Sulfuras, Hand of Ragnaros" {
+		return &Sulfuras{
+			Item: item,
+		}
+	} else if item.Name == "Aged Brie" {
+		return &Brie{
+			Item: item,
+		}
+	} else if item.Name == "Backstage passes to a TAFKAL80ETC concert" {
+		return &Passes{
+			Item: item,
+		}
+	} else {
+		return &Normal{
+			Item: item,
 		}
 	}
+}
+
+type Updateable interface {
+	Update()
 }
