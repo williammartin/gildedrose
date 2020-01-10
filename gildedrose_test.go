@@ -63,7 +63,7 @@ var _ = Describe("The Gilded Rose", func() {
 				shop.UpdateInventory()
 			})
 
-			It("cannot decrease any further", func() {
+			It("cannot decrease in quality any further", func() {
 				Expect(normalItem.Quality).To(Equal(0))
 			})
 		})
@@ -84,6 +84,30 @@ var _ = Describe("The Gilded Rose", func() {
 
 		It("decreases sell in date by 1 each day", func() {
 			Expect(brie.SellIn).To(Equal(19))
+		})
+
+		When("the quality of brie has reached 50", func() {
+			BeforeEach(func() {
+				brie = &Item{Name: "Aged Brie", SellIn: 20, Quality: 50}
+				shop := &GildedRose{Inventory: []*Item{brie}}
+				shop.UpdateInventory()
+			})
+
+			It("does not increase in quality any further", func() {
+				Expect(brie.Quality).To(Equal(50))
+			})
+		})
+
+		When("the sell by date has passed", func() {
+			BeforeEach(func() {
+				brie = &Item{Name: "Aged Brie", SellIn: 0, Quality: 10}
+				shop := &GildedRose{Inventory: []*Item{brie}}
+				shop.UpdateInventory()
+			})
+
+			It("increases the quality by 2 each day", func() {
+				Expect(brie.Quality).To(Equal(12))
+			})
 		})
 	})
 
