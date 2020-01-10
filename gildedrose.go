@@ -26,6 +26,18 @@ func updateNormalItem(item *Item) {
 	}
 }
 
+func updateBrie(brie *Item) {
+	brie.SellIn--
+	if brie.Quality == 50 {
+		return
+	}
+
+	brie.Quality++
+	if brie.SellIn < 0 {
+		brie.Quality++
+	}
+}
+
 func (g *GildedRose) UpdateInventory() {
 	for i := 0; i < len(g.Inventory); i++ {
 		item := g.Inventory[i]
@@ -35,6 +47,9 @@ func (g *GildedRose) UpdateInventory() {
 			continue
 		} else if item.Name == "Normal" {
 			updateNormalItem(item)
+			continue
+		} else if item.Name == "Aged Brie" {
+			updateBrie(item)
 			continue
 		}
 
