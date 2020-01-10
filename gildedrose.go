@@ -14,12 +14,27 @@ type GildedRose struct {
 
 func updateSulfuras(sulfuras *Item) {}
 
+func updateNormalItem(item *Item) {
+	item.SellIn--
+	if item.Quality == 0 {
+		return
+	}
+
+	item.Quality--
+	if item.SellIn < 0 {
+		item.Quality--
+	}
+}
+
 func (g *GildedRose) UpdateInventory() {
 	for i := 0; i < len(g.Inventory); i++ {
 		item := g.Inventory[i]
 
 		if item.Name == "Sulfuras, Hand of Ragnaros" {
 			updateSulfuras(item)
+			continue
+		} else if item.Name == "Normal" {
+			updateNormalItem(item)
 			continue
 		}
 
