@@ -1,125 +1,83 @@
-package gildedrose
+package gildedrose_test
 
-import "testing"
+import (
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 
-func TestSellInDecreasesOneUnit(t *testing.T) {
-	testSellIn(t, "Anything", 6, 9, 5)
-}
+	. "github.com/williammartin/gildedrose"
+)
 
-func TestQualityDecreasesOneUnit(t *testing.T) {
-	testQuality(t, "Anything", 6, 9, 8)
-}
+var _ = Describe("The Gilded Rose", func() {
 
-func TestQualityDecreasesTwoUnitsAfterSellDate(t *testing.T) {
-	testQuality(t, "Anything", 0, 9, 7)
-}
+	Describe("Sulfuras, Hand of Ragnaros", func() {
+		var sulfuras *Item
 
-func TestQualityIsNeverNegative(t *testing.T) {
-	testQuality(t, "Anything", 5, 0, 0)
-}
+		BeforeEach(func() {
+			sulfuras = &Item{Name: "Sulfuras, Hand of Ragnaros", SellIn: 20, Quality: 80}
+			shop := &GildedRose{Inventory: []*Item{sulfuras}}
+			shop.UpdateInventory()
+		})
 
-func TestAgedBrieSellInDecreasesOneUnit(t *testing.T) {
-	testSellIn(t, "Aged Brie", 5, 10, 4)
-}
+		It("always has a quality of 80", func() {
+			Expect(sulfuras.Quality).To(Equal(80))
+		})
 
-func TestAgedBrieQualityIncreasesOneUnit(t *testing.T) {
-	testQuality(t, "Aged Brie", 5, 10, 11)
-}
+		It("never needs to be sold", func() {
+			Expect(sulfuras.SellIn).To(Equal(20))
+		})
+	})
 
-func TestAgedBrieQualityIncreasesTwoUnitsAfterSellDate(t *testing.T) {
-	testQuality(t, "Aged Brie", 0, 10, 12)
-}
+	Describe("Any normal item", func() {
+		var normalItem *Item
 
-func TestAgedBrieQualityIsNeverMoreThanFifty(t *testing.T) {
-	testQuality(t, "Aged Brie", 5, 50, 50)
-}
+		BeforeEach(func() {
+			normalItem = &Item{Name: "Normal", SellIn: 20, Quality: 10}
+			shop := &GildedRose{Inventory: []*Item{normalItem}}
+			shop.UpdateInventory()
+		})
 
-func TestSulfurasNeverHasToBeSold(t *testing.T) {
-	testSellIn(t, "Sulfuras, Hand of Ragnaros", 0, 80, 0)
-}
+		It("decreases quality by 1 each day", func() {
+			Expect(normalItem.Quality).To(Equal(9))
+		})
 
-func TestSulfurasQualityNeverDecreases(t *testing.T) {
-	testQuality(t, "Sulfuras, Hand of Ragnaros", 0, 80, 80)
-}
+		It("decreases sell in date by 1 each day", func() {
+			Expect(normalItem.SellIn).To(Equal(19))
+		})
+	})
 
-func TestBackstageSellInDecreasesOneUnit(t *testing.T) {
-	testSellIn(t, "Backstage passes to a TAFKAL80ETC concert", 6, 10, 5)
-}
+	Describe("Aged Brie", func() {
+		var brie *Item
 
-func TestBackstagePassesQualityIncreasesOneUnitIfSellInMoreThanTen(t *testing.T) {
-	testQuality(t, "Backstage passes to a TAFKAL80ETC concert", 11, 20, 21)
-}
+		BeforeEach(func() {
+			brie = &Item{Name: "Aged Brie", SellIn: 20, Quality: 10}
+			shop := &GildedRose{Inventory: []*Item{brie}}
+			shop.UpdateInventory()
+		})
 
-func TestBackstagePassesQualityIncreasesTwoUnitsIfSellInLessThanEleven(t *testing.T) {
-	testQuality(t, "Backstage passes to a TAFKAL80ETC concert", 10, 20, 22)
-}
+		It("increases in quality by 1 each day", func() {
+			Expect(brie.Quality).To(Equal(11))
+		})
 
-func TestBackstagePassesQualityIncreasesTwoUnitsIfSellInMoreThanFive(t *testing.T) {
-	testQuality(t, "Backstage passes to a TAFKAL80ETC concert", 6, 20, 22)
-}
+		It("decreases sell in date by 1 each day", func() {
+			Expect(brie.SellIn).To(Equal(19))
+		})
+	})
 
-func TestBackstagePassesQualityIncreasesThreeUnitsIfSellInLessThanSix(t *testing.T) {
-	testQuality(t, "Backstage passes to a TAFKAL80ETC concert", 5, 20, 23)
-}
+	Describe("Concert Passes", func() {
+		var passes *Item
 
-func TestBackstagePassesQualityIsZeroAfterSellDate(t *testing.T) {
-	testQuality(t, "Backstage passes to a TAFKAL80ETC concert", 0, 20, 0)
-}
+		BeforeEach(func() {
+			passes = &Item{Name: "Backstage passes to a TAFKAL80ETC concert", SellIn: 20, Quality: 10}
+			shop := &GildedRose{Inventory: []*Item{passes}}
+			shop.UpdateInventory()
+		})
 
-func TestBackstagePassesQualityIsNeverMoreThanFiftyWhenIncreasingOne(t *testing.T) {
-	testQuality(t, "Backstage passes to a TAFKAL80ETC concert", 11, 50, 50)
-}
+		It("increases in quality by 1 each day", func() {
+			Expect(passes.Quality).To(Equal(11))
+		})
 
-func TestBackstagePassesQualityIsNeverMoreThanFiftyWhenIncreasingTwo(t *testing.T) {
-	testQuality(t, "Backstage passes to a TAFKAL80ETC concert", 7, 49, 50)
-}
-
-func TestBackstagePassesQualityIsNeverMoreThanFiftyWhenIncreasingThree(t *testing.T) {
-	testQuality(t, "Backstage passes to a TAFKAL80ETC concert", 1, 49, 50)
-}
-
-func TestConjuredSellInDecreasesOneUnit(t *testing.T) {
-	t.Skip()
-	testSellIn(t, "Conjured", 8, 12, 7)
-}
-
-func TestConjuredQualityDecreasesTwoUnits(t *testing.T) {
-	t.Skip()
-	testQuality(t, "Conjured", 8, 12, 10)
-}
-
-func TestConjuredQualityDecreasesFourUnitsAfterSellDate(t *testing.T) {
-	t.Skip()
-	testQuality(t, "Conjured", 0, 12, 8)
-}
-
-func TestConjuredQualityIsNeverNegative(t *testing.T) {
-	t.Skip()
-	testQuality(t, "Conjured", 8, 0, 0)
-}
-
-// Auxiliary functions
-
-func testSellIn(t *testing.T, itemName string, initiallSellIn int, initialQuality int, expectedSellIn int) {
-	items := []*Item{
-		&Item{itemName, initiallSellIn, initialQuality},
-	}
-
-	UpdateInventory(items)
-
-	if items[0].sellIn != expectedSellIn {
-		t.Errorf("SellIn (expected: %d, actual: %d).", expectedSellIn, items[0].sellIn)
-	}
-}
-
-func testQuality(t *testing.T, itemName string, initiallSellIn int, initialQuality int, expectedQuality int) {
-	items := []*Item{
-		&Item{itemName, initiallSellIn, initialQuality},
-	}
-
-	UpdateInventory(items)
-
-	if items[0].quality != expectedQuality {
-		t.Errorf("Quality (expected: %d, actual: %d).", expectedQuality, items[0].quality)
-	}
-}
+		It("decreases sell in date by 1 each day", func() {
+			Expect(passes.SellIn).To(Equal(19))
+		})
+	})
+})

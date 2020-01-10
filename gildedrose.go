@@ -1,77 +1,64 @@
 package gildedrose
 
 type Item struct {
-	name    string
-	sellIn  int
-	quality int
+	Name    string
+	SellIn  int
+	Quality int
 }
 
-func UpdateInventory(items []*Item) {
-	for _, item := range items {
-		if item.name == "Anything" {
-			UpdateAnything(item)
-			continue
-		} else if item.name == "Aged Brie" {
-			UpdateBrie(item)
-			continue
-		} else if item.name == "Sulfuras, Hand of Ragnaros" {
-			UpdateSulfuras(item)
-			continue
-		} else if item.name == "Backstage passes to a TAFKAL80ETC concert" {
-			UpdateBackstage(item)
-			continue
+type Inventory []*Item
+
+type GildedRose struct {
+	Inventory Inventory
+}
+
+func (g *GildedRose) UpdateInventory() {
+	for i := 0; i < len(g.Inventory); i++ {
+
+		if g.Inventory[i].Name != "Aged Brie" && g.Inventory[i].Name != "Backstage passes to a TAFKAL80ETC concert" {
+			if g.Inventory[i].Quality > 0 {
+				if g.Inventory[i].Name != "Sulfuras, Hand of Ragnaros" {
+					g.Inventory[i].Quality = g.Inventory[i].Quality - 1
+				}
+			}
+		} else {
+			if g.Inventory[i].Quality < 50 {
+				g.Inventory[i].Quality = g.Inventory[i].Quality + 1
+				if g.Inventory[i].Name == "Backstage passes to a TAFKAL80ETC concert" {
+					if g.Inventory[i].SellIn < 11 {
+						if g.Inventory[i].Quality < 50 {
+							g.Inventory[i].Quality = g.Inventory[i].Quality + 1
+						}
+					}
+					if g.Inventory[i].SellIn < 6 {
+						if g.Inventory[i].Quality < 50 {
+							g.Inventory[i].Quality = g.Inventory[i].Quality + 1
+						}
+					}
+				}
+			}
+		}
+
+		if g.Inventory[i].Name != "Sulfuras, Hand of Ragnaros" {
+			g.Inventory[i].SellIn = g.Inventory[i].SellIn - 1
+		}
+
+		if g.Inventory[i].SellIn < 0 {
+			if g.Inventory[i].Name != "Aged Brie" {
+				if g.Inventory[i].Name != "Backstage passes to a TAFKAL80ETC concert" {
+					if g.Inventory[i].Quality > 0 {
+						if g.Inventory[i].Name != "Sulfuras, Hand of Ragnaros" {
+							g.Inventory[i].Quality = g.Inventory[i].Quality - 1
+						}
+					}
+				} else {
+					g.Inventory[i].Quality = g.Inventory[i].Quality - g.Inventory[i].Quality
+				}
+			} else {
+				if g.Inventory[i].Quality < 50 {
+					g.Inventory[i].Quality = g.Inventory[i].Quality + 1
+				}
+			}
 		}
 	}
-}
-
-func UpdateAnything(item *Item) {
-	if item.quality > 0 {
-		item.quality = item.quality - 1
-	}
-
-	if item.quality > 0 && item.sellIn < 1 {
-		item.quality = item.quality - 1
-	}
-
-	item.sellIn = item.sellIn - 1
-}
-
-func UpdateBrie(item *Item) {
-	if item.quality == 50 {
-		return
-	}
-
-	item.quality = item.quality + 1
-
-	if item.sellIn < 1 {
-		item.quality = item.quality + 1
-	}
-
-	item.sellIn = item.sellIn - 1
-}
-
-func UpdateSulfuras(item *Item) {
-
-}
-
-func UpdateBackstage(item *Item) {
-	item.quality = item.quality + 1
-
-	if item.sellIn <= 10 {
-		item.quality = item.quality + 1
-	}
-
-	if item.sellIn <= 5 {
-		item.quality = item.quality + 1
-	}
-
-	if item.sellIn <= 0 {
-		item.quality = 0
-	}
-
-	if item.quality > 50 {
-		item.quality = 50
-	}
-
-	item.sellIn = item.sellIn - 1
 }
