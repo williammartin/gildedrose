@@ -38,6 +38,23 @@ func updateBrie(brie *Item) {
 	}
 }
 
+func updatePasses(passes *Item) {
+	passes.SellIn--
+	if passes.SellIn < 0 {
+		passes.Quality = 0
+		return
+	}
+
+	passes.Quality++
+	if passes.SellIn < 10 {
+		passes.Quality++
+	}
+
+	if passes.SellIn < 5 {
+		passes.Quality++
+	}
+}
+
 func (g *GildedRose) UpdateInventory() {
 	for i := 0; i < len(g.Inventory); i++ {
 		item := g.Inventory[i]
@@ -50,6 +67,9 @@ func (g *GildedRose) UpdateInventory() {
 			continue
 		} else if item.Name == "Aged Brie" {
 			updateBrie(item)
+			continue
+		} else if item.Name == "Backstage passes to a TAFKAL80ETC concert" {
+			updatePasses(item)
 			continue
 		}
 
