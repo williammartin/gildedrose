@@ -43,6 +43,30 @@ var _ = Describe("The Gilded Rose", func() {
 		It("decreases sell in date by 1 each day", func() {
 			Expect(normalItem.SellIn).To(Equal(19))
 		})
+
+		When("the sell by date has passed", func() {
+			BeforeEach(func() {
+				normalItem = &Item{Name: "Normal", SellIn: 0, Quality: 10}
+				shop := &GildedRose{Inventory: []*Item{normalItem}}
+				shop.UpdateInventory()
+			})
+
+			It("decreases the quality by 2 each day", func() {
+				Expect(normalItem.Quality).To(Equal(8))
+			})
+		})
+
+		When("the quality of an item has reached 0", func() {
+			BeforeEach(func() {
+				normalItem = &Item{Name: "Normal", SellIn: 0, Quality: 0}
+				shop := &GildedRose{Inventory: []*Item{normalItem}}
+				shop.UpdateInventory()
+			})
+
+			It("cannot decrease any further", func() {
+				Expect(normalItem.Quality).To(Equal(0))
+			})
+		})
 	})
 
 	Describe("Aged Brie", func() {
